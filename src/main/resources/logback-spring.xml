@@ -1,0 +1,61 @@
+<configuration>
+    <springProperty name="ACTIVE_PROFILE" source="spring.profiles.active"/>
+    <property resource="application-${ACTIVE_PROFILE}.properties" />
+    <property name="LOG_FILE" value="study_app.log"/>
+    <property name="LOG_FILE_ARCHIVE" value="study_app.%d{yyyy-MM-dd}.%i.log.gz"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{"yyyy-MM-dd HH:mm:ss,SSS", "Europe/Moscow"} [%thread] RID[%X{rid}] %highlight(%-5level) %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+    </appender>
+    <appender name="HACK_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{"yyyy-MM-dd HH:mm:ss,SSS", "Europe/Moscow"} [%thread] RID[%X{rid}] %highlight(%-5level) %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+    </appender>
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_PATH}/${LOG_FILE}</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_PATH}/${LOG_FILE_ARCHIVE}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%date{"yyyy-MM-dd'T'HH:mm:ss.SSSXXX", "Europe/Moscow"} [%t] RID[%X{rid}] %-5level %logger{36} : %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ROLLING_FILE"/>
+    </root>
+
+    <logger name="ru.inex.app.auth.listeners.StartupListener" level="info" additivity="false">
+        <appender-ref ref="HACK_STDOUT"/>
+    </logger>
+
+
+<!--    <logger name="org.springframework.jdbc.core.JdbcTemplate">
+        <level value="debug" />
+    </logger>
+    <logger name="org.springframework.jdbc.core.StatementCreatorUtils">
+        <level value="debug" />
+    </logger>-->
+
+</configuration>

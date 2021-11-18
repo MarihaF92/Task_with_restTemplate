@@ -1,0 +1,14 @@
+.tpl: &tpl
+  project: 'core/infra/ci/templates'
+
+include:
+- { <<: *tpl, file: 'java/build.app.yml'  }
+- { <<: *tpl, file: 'docker/vars.yml'     }
+- { <<: *tpl, file: 'docker/main.b+p.yml' }
+- { <<: *tpl, file: 'k8s/deploy.ci.yml'   }
+- { <<: *tpl, file: 'base/initialize.yml' } 
+
+variables:
+  CI_VAR__JAVA_VERSION: '11'
+  CI_VAR__PROJECT_NAME: 'study_app'
+  CI_VAR__JAVA_JAR_NAME: "study_app"
